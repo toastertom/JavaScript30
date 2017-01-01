@@ -17,6 +17,32 @@
 <script>
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
+const cities = [];
+
+//Fetch comes built into the browser. Keep in mind that Fectch itself returns a promise.
+fetch(endpoint)
+  .then(promise => promise.json()) // The promise needs to be converted to json. So access the json method that comes back with the promise and do another .then() which will return another promise.
+
+  .then(data => cities.push(...data)) // We then push the data that comes back into the cities array. Now the data can be accessed by calling the cities variable.
+
+function findMatch(wordsToMatch, cities) {
+  return cities.filter(place => {
+    const regex = new RegExp(wordsToMatch, 'gi');
+    return place.city.match(regex) || place.state.match(regex);
+  });
+}
+
+function displayMatches() {
+
+}
+
+const searchInput = document.querySelector('.search'); // Selects the class="search" in HTML.
+
+const suggestions = document.querySelector('.suggestions'); // Selects the class="suggestions" in HTML.
+
+searchInput.addEventListener('change', displayMatches);
+searchInput.addEventListener('keyup', displayMatches); // Listens for a keyup event on class="search" then runs the displayMatches function.
+
 </script>
   </body>
 </html>
