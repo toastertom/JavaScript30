@@ -24,6 +24,8 @@
     .panels {
       min-height:100vh;
       overflow: hidden;
+      display: flex;
+      flex: 1;
     }
 
     .panel {
@@ -41,6 +43,11 @@
       font-size: 20px;
       background-size:cover;
       background-position:center;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
 
 
@@ -54,6 +61,31 @@
       margin:0;
       width: 100%;
       transition:transform 0.5s;
+      flex: 1 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /*This moves the top words outside of the view*/
+    .panel > *:first-child {
+      transform: translateY(-100%);
+    }
+
+    /*This moves the bottom words outside of the view*/
+    .panel > *:last-child {
+      transform: translateY(100%);
+    }
+
+    /*When the element has the class of open-active it executes the code below.*/
+    .panel.open-active > *:first-child {
+      transform: translateY(0);
+    }
+
+
+    /*When the element has the class of open-active it executes the code below.*/
+    .panel.open-active > *:last-child {
+      transform: translateY(0);
     }
 
     .panel p {
@@ -68,6 +100,7 @@
 
     .panel.open {
       font-size:40px;
+      flex: 5;
     }
 
     .cta {
@@ -107,6 +140,24 @@
   </div>
 
   <script>
+    const panels = document.querySelectorAll('.panel');
+
+    function toggleOpen() {
+        this.classList.toggle('open');
+    };
+
+    // We use .includes('flex') because most browsers use flex-grow but safari just uses flex. So this fixes that problem.
+    function toggleActive (e) {
+      if (e.propertyName.includes('flex')){
+        this.classList.toggle('open-active');
+      }
+    };
+
+    panels.forEach(panel => panel.addEventListener('click', toggleOpen));
+
+    panels.forEach(panel => panel.addEventListener('transitionend', toggleActive));
+
+    console.log(panels);
 
   </script>
 
