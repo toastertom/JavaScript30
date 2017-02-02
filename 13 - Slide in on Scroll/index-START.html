@@ -43,6 +43,7 @@
   </div>
 
   <script>
+    // debounce makes it so checkSlide function will only run so many times. This is done for performance reasons because the scroll event will run over and over every time you scroll.
     function debounce(func, wait = 20, immediate = true) {
       var timeout;
       return function() {
@@ -57,6 +58,29 @@
         if (callNow) func.apply(context, args);
       };
     }
+
+    const sliderImages = document.querySelectorAll('.slide-in');
+
+    function checkSlide (e) {
+      // Gets the half way point in the image.
+      sliderImages.forEach(sliderImage =>{
+        const slideInAt = (window.scrollY + window.innerHeight) - sliderImage.height / 2;
+
+        //Repeat the animation when scrolling back up.
+        const imageBottom =  sliderImage.offsetTop + sliderImage.height;
+
+        const isHalfShown = slideInAt > sliderImage.offsetTop;
+        // Makes sure we are not scrolled passed the bottom.
+        const isNotScrolledPast = window.scrollY < imageBottom;
+        if (isHalfShown && isNotScrolledPast) {
+          sliderImage.classList.add('active');
+        }else{
+          sliderImage.classList.remove('active');
+        }
+      })
+    }
+
+    window.addEventListener('scroll', debounce(checkSlide));
 
   </script>
 
