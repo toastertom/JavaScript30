@@ -28,11 +28,59 @@
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  //On page load if there is content in localStorage then items will = that.
+  //If not then items will be a blank array.
+  //JSON.parse() will convert the string back into an object.
+  const items = JSON.parse(localStorage.getItem('items')) || [];
+
+  function addItem(e) {
+    e.preventDefault();
+    const text = (this.querySelector('[name=item]')).value;
+    const item = {
+      text: text,
+      done: false
+    };
+    items.push(item);
+    populateList(items, itemsList);
+
+    //Local storage. Will only accept strings.
+    //JSON.stringify() will convert an object into a string.
+    localStorage.setItem('items', JSON.stringify(items));
+
+    //Resets the text in the form after submit.
+    this.reset();
+  };
+
+  function populateList(plates = [], platesList) {
+      platesList.innerHTML = plates.map((plate, i) => {
+      return `
+        <li>
+          <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked' : ''}/>
+          <label for="item${i}">${plate.text}</label>
+        </li>
+      `
+    }).join('');
+  }
+
+  //This is for saving the Emojis icons when refreshed.
+  function toggleDone(e) {
+    if (!e.target.matches('input')) return; // Makes sure the click event only fires if it is an input.
+    const el = e.target;
+    const index = el.dataset.index;
+    items[index].done = !items[index].done;
+    localStorage.setItem('items', JSON.stringify(items));
+    populateList(items, itemsList);
+  }
+
+  addItems.addEventListener('submit', addItem );
+
+  itemsList.addEventListener('click', toggleDone ); //Event delegation. We have to look at the plates class and then tell its child what to do.
+
+
+  populateList(items, itemsList);
 
 </script>
 
 
 </body>
 </html>
-
